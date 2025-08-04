@@ -150,6 +150,9 @@ Feel free to reach out to me on Discord (odjit) if you have any questions or nee
 - `.give (Item prefab name) (amount)`			
   - Example: *.give Headgear_arcmageCrown 1*
   - Shortcut: *.g*
+- `.giveToAll (Item prefab name) (amount) (onlineOnly: true/false)`
+  - will give an item to all players. onlineOnly can be used to only give to online players.
+  - Example: *.giveAll Headgear_arcmageCrown 1 false*
 - `.search item (name) (page #)`
   - Will respond with the item prefab name needed.
   - Example: *.search item arcmage*
