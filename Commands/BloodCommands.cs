@@ -41,7 +41,7 @@ internal static class BloodCommands
 		secondaryQuality = Mathf.Clamp(secondaryQuality, 0, 100);
 		secondaryTrait = Mathf.Clamp(secondaryTrait, 1, 3);
 		var countAdded = Helper.AddBloodMerlotMixToInventory(ctx.Event.SenderCharacterEntity, primaryType, primaryQuality, secondaryType, secondaryQuality, secondaryTrait, quantity);
-		ctx.Reply($"Received <color=#ff0>{quantity}</color> Blood Merlot of <color=#ff0>{primaryType}</color> type of <color=#ff0>{primaryQuality}</color>% quality " +
+		ctx.Reply($"Received <color=#ff0>{countAdded}</color> Blood Merlot of <color=#ff0>{primaryType}</color> type of <color=#ff0>{primaryQuality}</color>% quality " +
 				  $"with secondary <color=#ff0>{secondaryType}</color> type of <color=#ff0>{secondaryQuality}</color>% quality and trait option {secondaryTrait}");
 		if (countAdded < quantity)
 		{
