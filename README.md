@@ -143,6 +143,9 @@ Feel free to reach out to me on Discord (odjit) if you have any questions or nee
   - will give Merlot of specified type and quality. You can also specify an amount
   - Example: *.bp creature 100 1*
   - Shortcut: *.bp*
+- `.bloodpotionToAll (Bloodtype) (Quality) (Amount) (onlineOnly: true/false)`
+  - will give Merlot of specified type and quality to all players. You can also specify an amount. onlineOnly can be used to only give to online players.
+  - Example: *.bloodpotionToAll creature 100 1 false*
 - `.bloodpotionmix (PrimaryType) (PrimaryQuality) (SecondaryType) (SecondaryQuality) (SecondaryTrait) (Quantity)`
   - will give Merlot with two specified Blood Types, Qualities, secondary trait option and amount
   - Example: *.bpm warrior 100 creature 100 1 5*
@@ -152,7 +155,7 @@ Feel free to reach out to me on Discord (odjit) if you have any questions or nee
   - Shortcut: *.g*
 - `.giveToAll (Item prefab name) (amount) (onlineOnly: true/false)`
   - will give an item to all players. onlineOnly can be used to only give to online players.
-  - Example: *.giveAll Headgear_arcmageCrown 1 false*
+  - Example: *.giveToAll Headgear_arcmageCrown 1 false*
 - `.search item (name) (page #)`
   - Will respond with the item prefab name needed.
   - Example: *.search item arcmage*

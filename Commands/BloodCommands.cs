@@ -14,26 +14,24 @@ internal static class BloodCommands
 	public static void GiveBloodPotionCommand(ChatCommandContext ctx, BloodType type = BloodType.Frailed, float quality = 100f, int quantity = 1)
 	{
 		quality = Mathf.Clamp(quality, 0, 100);
-		for (var i = 0; i < quantity; i++)
+		var countAdded = Helper.AddBloodPotionToInventory(ctx.Event.SenderCharacterEntity, type, quality, quantity);
+		ctx.Reply($"Received <color=#ff0>{countAdded}</color> Blood Merlot of <color=#ff0>{type}</color> type of <color=#ff0>{quality}</color>% quality");
+		if (countAdded < quantity)
 		{
-			Entity entity = Helper.AddItemToInventory(ctx.Event.SenderCharacterEntity, new PrefabGUID(1223264867), 1);
-
-			if(entity == Entity.Null)
-			{
-				ctx.Reply($"Received <color=#ff0>{i}</color> Blood Merlot of <color=#ff0>{type}</color> type of <color=#ff0>{quality}</color>% quality");
-				ctx.Reply($"Inventory is full, could not add the last <color=#ff0>{quantity - i}</color> Blood Merlot");
-				return;
-			}
-
-			var blood = new StoredBlood()
-			{
-				BloodQuality = quality,
-				PrimaryBloodType = new PrefabGUID((int)type)
-			};
-
-			Core.EntityManager.SetComponentData(entity, blood);
+			ctx.Reply($"Inventory is full, could not add the last <color=#ff0>{quantity - countAdded}</color> Blood Merlot");
 		}
-		ctx.Reply($"Received <color=#ff0>{quantity}</color> Blood Merlot of <color=#ff0>{type}</color> type of <color=#ff0>{quality}</color>% quality");
+	}
+
+	[Command("bloodpotionToAll", null, description: "Gives a potion to all players, with specified Blood Type, Quality, and amount", adminOnly: true)]
+	public static void GiveBloodPotionToAllPlayersCommand(ChatCommandContext ctx, BloodType type = BloodType.Frailed, float quality = 100f, int quantity = 1, bool onlineOnly = false)
+	{
+		quality = Mathf.Clamp(quality, 0, 100);
+		foreach (var characterEntity in Core.Players.GetPlayerCharacters(onlineOnly))
+		{
+			Helper.AddBloodPotionToInventory(characterEntity, type, quality, quantity);
+		}
+		var targetDesc = onlineOnly ? "all online players" : "all players";
+		ctx.Reply($"Gave to {targetDesc}: <color=#ff0>{quantity}</color> Blood Merlot of <color=#ff0>{type}</color> type of <color=#ff0>{quality}</color>% quality");
 	}
 
 	[Command("bloodpotionmix", "bpm", description: "Creates a Potion with two specified Blood Types, Qualities, secondary trait option and amount", adminOnly: true)]
