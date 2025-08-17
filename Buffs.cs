@@ -7,14 +7,18 @@ using Stunlock.Core;
 namespace KindredCommands;
 internal class Buffs
 {
-	public static bool TryAddBuff(Entity User, Entity Character, PrefabGUID buffPrefab, int duration = 0, bool immortal = true)
+	public static bool TryAddBuff(Entity user, Entity character, PrefabGUID buffPrefab, int duration = 0, bool immortal = true)
 	{
-		if (BuffUtility.HasBuff(Core.Server.EntityManager, Character, buffPrefab.ToIdentifier()))
+		if (BuffUtility.HasBuff(Core.Server.EntityManager, character, buffPrefab.ToIdentifier()))
 		{
-			return false; // todo: is there any actual use case for not updating an existing buff?
+			return false;
 		}
-
-		if (!TryGetOrCreateBuff(User, Character, buffPrefab, out var buffEntity))
+		return TryAddOrUpdateBuff(user, character, buffPrefab, duration, immortal);
+	}
+	
+	public static bool TryAddOrUpdateBuff(Entity user, Entity character, PrefabGUID buffPrefab, int duration = 0, bool immortal = true)
+	{
+		if (!TryGetOrCreateBuff(user, character, buffPrefab, out var buffEntity))
 		{
 			return false;
 		}
@@ -40,7 +44,7 @@ internal class Buffs
 			Character = Character
 		};
 		des.ApplyBuff(fromCharacter, buffEvent);
-		
+
 		if (!BuffUtility.TryGetBuff(Core.Server.EntityManager, Character, buffPrefab, out buffEntity))
 		{
 			return false;
@@ -59,7 +63,13 @@ internal class Buffs
 
 	public static void UpdateBuff(Entity buffEntity, int duration = 0, bool immortal = true)
 	{
-		if (immortal)
+		ResetBuffDuration(buffEntity, duration);
+		UpdateBuffPersistThroughDeath(buffEntity, immortal);
+	}
+
+	public static void UpdateBuffPersistThroughDeath(Entity buffEntity, bool shouldPersistThroughDeath)
+	{
+		if (shouldPersistThroughDeath)
 		{
 			buffEntity.Add<Buff_Persists_Through_Death>();
 			if (buffEntity.Has<RemoveBuffOnGameplayEvent>())
@@ -72,20 +82,32 @@ internal class Buffs
 				buffEntity.Remove<RemoveBuffOnGameplayEventEntry>();
 			}
 		}
+		else
+		{
+			buffEntity.Remove<Buff_Persists_Through_Death>();
+		}
+	}
+
+	public static void ResetBuffDuration(Entity buffEntity, int duration = 0)
+	{
+		float age = 0;
+		if (Core.EntityManager.TryGetComponentData<Age>(buffEntity, out var ageData))
+		{
+			age = ageData.Value;
+		}
 
 		if (duration > -1 && duration != 0)
 		{
 			if (!buffEntity.Has<LifeTime>())
 			{
 				buffEntity.Add<LifeTime>();
-				buffEntity.Write(new LifeTime
-				{
-					EndAction = LifeTimeEndAction.Destroy
-				});
 			}
-
 			var lifetime = buffEntity.Read<LifeTime>();
-			lifetime.Duration = duration;
+			lifetime.Duration = duration + age;
+			if (lifetime.EndAction == LifeTimeEndAction.None)
+			{
+				lifetime.EndAction = LifeTimeEndAction.Destroy;
+			}
 			buffEntity.Write(lifetime);
 		}
 		else if (duration == -1)
