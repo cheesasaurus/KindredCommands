@@ -41,7 +41,7 @@ internal class BuffCommands
 		var userEntity = player?.Value.UserEntity ?? ctx.Event.SenderUserEntity;
 		var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
 
-		Buffs.AddBuff(userEntity, charEntity, buff.Prefab, duration, immortal);
+		Buffs.TryAddBuff(userEntity, charEntity, buff.Prefab, duration, immortal);
 		ctx.Reply($"Applied the buff {buff.Name} to {userEntity.Read<User>().CharacterName}");
 	}
 
@@ -55,7 +55,7 @@ internal class BuffCommands
 			totalCount++;
 			try
 			{
-				Buffs.AddBuff(playerData.UserEntity, playerData.CharEntity, buff.Prefab, duration, immortal);
+				Buffs.TryAddBuff(playerData.UserEntity, playerData.CharEntity, buff.Prefab, duration, immortal);
 				successCount++;
 			}
 			catch (Exception ex)
