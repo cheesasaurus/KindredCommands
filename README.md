@@ -199,9 +199,15 @@ Feel free to reach out to me on Discord (odjit) if you have any questions or nee
 - `.buff (Buff GUID) (Player) (Duration) (Immortal)`
   - Adds a buff to a player named, or the user if no one is named. Duration 0 for default behavior, -1 for eternal, or whatever number of seconds. Immortal true/false for it to last after death.	Be careful, as some buffs can break things. Always test on a test server first.
   - Example: *.buff 476186894 Bob*
+- `.buffToAll (BuffGUID) (Duration) (Immortal)`
+  - Same as .buff, but applies the buff to all online players.
+  - Example: `.buffToAll -1591883586 7200`
 - `.debuff (Buff GUID) (Player)`
   - Removes a buff from a player named, or the user if no one is named. Will work on offline players.
   - Example: *.debuff 476186894 Bob*
+- `.debuffToAll (BuffGUID)`
+  - Same as .debuff, but removes the buff from all players.
+  - Example: `.debuffToAll -1591883586`
 - `.listbuffs (Player)`
   - will show all buffs on a player																								
   - Example: *.listbuffs Bob*
